@@ -42,7 +42,17 @@ def getRules(ruleslist):
 
     ["F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60)}
     """
-    pass
+    rules = {}
+    for rule in ruleslist:
+        r = rule.split(":")
+        r[1] = r[1].split(",")
+        if len(r[1]) == 2:
+            r[1] = (r[1][0].strip(), int(r[1][1].strip()))
+        else:
+            r[1] = (r[1][0].strip(), 90)
+        rules[r[0]] = r[1]
+        return rules
+
 
 
 def setupTurtle():
