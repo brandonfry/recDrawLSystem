@@ -38,7 +38,7 @@ class TestGetRules(unittest.TestCase):
         ruleslist = ["F: F+E--E+F, 60", "E: E-F++F-E, 70"]
         rules = recDrawLSystem.getRules(ruleslist)
         self.assertEqual(rules, {"F": ("F+E--E+F", 60),
-                                 "E": ("E: E-F++F-E", 70)})
+                                 "E": ("E-F++F-E", 70)})
 
     def test_ok_two_line_no_angle(self):
         ruleslist = ["A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
@@ -48,15 +48,15 @@ class TestGetRules(unittest.TestCase):
 
     def test_wrong_one_line1(self):
         ruleslist = [" "]
-        self.assertRaises(ValueError, recDrawLSystem.getRules(ruleslist))
+        self.assertRaises(ValueError, recDrawLSystem.getRules, ruleslist)
 
     def test_wrong_one_line2(self):
         ruleslist = ["A: -A+A60"]
-        self.assertRaises(ValueError, recDrawLSystem.getRules(ruleslist))
+        self.assertRaises(ValueError, recDrawLSystem.getRules, ruleslist)
 
     def test_wrong_one_line3(self):
         ruleslist = ["A: -A+B"]
-        self.assertRaises(ValueError, recDrawLSystem.getRules(ruleslist))
+        self.assertRaises(ValueError, recDrawLSystem.getRules, ruleslist)
 
 
 class TestCalcPoints(unittest.TestCase):

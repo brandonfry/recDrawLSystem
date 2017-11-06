@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
+import turtle
+import re
+
+
 def drawLSystem(t, points):
     """
     Given a turtle object and list of points as tuples, draw
@@ -42,7 +46,21 @@ def getRules(ruleslist):
 
     ["F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60)}
     """
-    pass
+    rules = {}
+    validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+" +
+                           "([,][ ]*[0-9]+){0,1}")
+    for rule in ruleslist:
+        try:
+            assert re.fullmatch(validrule, rule) is not None
+        except AssertionError as e:
+            raise ValueError
+        r = re.split(r":[ ]*", rule, maxsplit=1)
+        if re.search(r",", rule):
+            r[1] = re.split(r",[ ]*", r[1], maxsplit=1)
+        else:
+            r[1] = [r[1], "90"]
+        rules[r[0]] = (r[1][0], int(r[1][1]))
+    return rules
 
 
 def setupTurtle():
@@ -66,7 +84,7 @@ def closeTurtle(win):
 if __name__ == "__main__":
     # grab input for size, ruleslist
     size = 3
-    ruleslist = ["F: F+F--F+F, 60"]
+    ruleslist = ["F1: F+F--F+F, 60"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()
