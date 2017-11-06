@@ -56,7 +56,7 @@ class TestGetRules(unittest.TestCase):
 
     def test_wrong_one_line3(self):
         ruleslist = ["A: -A+B"]
-        self.assertRaises(ValueError, recDrawLSystem.getRules, ruleslist)
+        self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules, ruleslist)
 
 
 class TestCalcPoints(unittest.TestCase):

@@ -22,6 +22,20 @@ import turtle
 import re
 
 
+
+class InputError(Exception):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+
 def drawLSystem(t, points):
     """
     Given a turtle object and list of points as tuples, draw
@@ -53,13 +67,19 @@ def getRules(ruleslist):
         try:
             assert re.fullmatch(validrule, rule) is not None
         except AssertionError as e:
-            raise ValueError
+            raise ValueError("Rule is not valid")
         r = re.split(r":[ ]*", rule, maxsplit=1)
         if re.search(r",", rule):
             r[1] = re.split(r",[ ]*", r[1], maxsplit=1)
         else:
             r[1] = [r[1], "90"]
         rules[r[0]] = (r[1][0], int(r[1][1]))
+    for rule in rules.values():
+        for char in re.findall(r"[a-zA-Z]", rule[0]):
+            try:
+                assert char in [*rules.keys(), "F"]
+            except AssertionError as e:
+                raise InputError(char, "Variable not found in rules.")
     return rules
 
 
@@ -84,7 +104,7 @@ def closeTurtle(win):
 if __name__ == "__main__":
     # grab input for size, ruleslist
     size = 3
-    ruleslist = ["F1: F+F--F+F, 60"]
+    ruleslist = ["A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()
