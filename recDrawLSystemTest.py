@@ -66,23 +66,80 @@ class TestGetRules(unittest.TestCase):
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
+    def test_wrong_invalid_rule(self):
+        ruleslist = ["90", "A", "A: A?A"]
+        self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
+                          ruleslist)
+
+    def test_wrong_invalid_angle(self):
+        ruleslist = ["9X", "A", "A: A+F"]
+        self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
+                          ruleslist)
+
 
 class TestGeneratePoints(unittest.TestCase):
 
+    def test_size_0_one_line(self):
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
+        point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F")
+
+    def test_size_0_one_line2(self):
+        rules = {"F": "F+F--F+F", "Axiom": "F+F", "Angle": 60}
+        point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F+F")
+
+    def test_size_0_one_line3(self):
+        rules = {"F": "F+F", "Axiom": "F-G", "Angle": 90}
+        point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F-")
+
     def test_size_1_one_line(self):
         rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
-        point_string = recDrawLSystem.recGeneratePointString(1, rules)
+        point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F+F--F+F")
+
+    def test_size_1_one_line2(self):
+        rules = {"A": "F+F--F+F", "Axiom": "A", "Angle": 60}
+        point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
+                                                         rules)
         self.assertEqual(point_string, "F+F--F+F")
 
     def test_size_2_one_line(self):
         rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
-        point_string = recDrawLSystem.recGeneratePointString(2, rules)
+        point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
+                                                         rules)
         self.assertEqual(point_string, "F+F--F+F+F+F--F+F--F+F--F+F+F+F--F+F")
 
     def test_size_3_one_line(self):
         rules = {"F": "F-F", "Axiom": "F", "Angle": 60}
-        point_string = recDrawLSystem.recGeneratePointString(3, rules)
+        point_string = recDrawLSystem.recGenerateLString(3, rules["Axiom"],
+                                                         rules)
         self.assertEqual(point_string, "F-F-F-F-F-F-F-F")
+
+    def test_size_1_two_line(self):
+        rules = {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+", "Axiom": "A",
+                 "Angle": 90}
+        point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "-F+F+F-")
+
+    def test_size_2_one_line2(self):
+        rules = {"F": "F+F-F-F+F", "Axiom": "F", "Angle": 90}
+        point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F" +
+                                       "-F+F+F+F-F-F+F")
+
+    def test_size_1_one_line3(self):
+        rules = {"F": "F-F+F", "Axiom": "F+F+F", "Angle": 90}
+        point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "F-F+F+F-F+F+F-F+F")
 
 
 class TestCalcPoints(unittest.TestCase):
@@ -95,4 +152,3 @@ class TestDrawLSystem(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

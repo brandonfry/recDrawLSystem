@@ -40,16 +40,38 @@ def drawLSystem(t, points):
     Given a turtle object and list of points as tuples, draw
     a curve described by an L-System.
     """
+
     pass
 
 
-def recGeneratePointString(size, rules):
+def recGenerateLString(size, rule, rules):
     """
-    Given a dictionary of L-system rules and curve size, generate recursively
-    a flat L-system representation of the curve. Returns a single string with
-    turn angles in parentheses after every turn, i.e. "F+(60)F-(60)F".
+    Given an L-system rule, a dictionary of L-system rules and curve size,
+    generate recursively a flat L-system representation of the curve.
+    Returns a single string.
     """
-    pass
+
+    s = ""
+    if size == 0:
+        return ''.join(re.findall(r"[F+-]", rule))
+    elif size == 1:
+        for char in rule:
+            if char in "+-":
+                s += char
+            elif char in rules.keys():
+                s += ''.join(re.findall(r"[F+-]", rules[char]))
+            elif char == "F":
+                s += char
+        return s
+    elif size > 1:
+        for char in rule:
+            if char in "+-":
+                s += char
+            elif char in rules.keys():
+                s += recGenerateLString(size-1, rules[char], rules)
+            elif char == "F":
+                s += char
+        return s
 
 
 def calcUnityPoints(ps):
@@ -66,8 +88,10 @@ def calcPoints(size, rules):
     along a curve of a particular size. Returns a list of points
     as tuples.
     """
-    point_string = recGeneratePointString(size, rules)
-    unity_points = calcUnityPoints(point_string)
+
+    string = recGenerateLString(size, rules["Axiom"], rules)
+    print(string)
+    unity_points = calcUnityPoints(string)
     points = scalePoints(unity_points)
     return points
 
@@ -80,6 +104,7 @@ def getRules(ruleslist):
     ["60", "F", "F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60), "Axiom": "F",
     "Angle": 60}
     """
+
     rules = {}
     validangle = re.compile(r"^[0-9]+$")
     validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+$")
@@ -136,7 +161,7 @@ def closeTurtle(win):
 
 if __name__ == "__main__":
     # grab input for size, ruleslist
-    size = 3
+    size = 1
     ruleslist = ["90", "A", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
