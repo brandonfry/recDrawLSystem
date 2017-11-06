@@ -95,6 +95,8 @@ def getRules(ruleslist):
             assert r[0] not in rules.keys()
         except AssertionError as e:
             raise InputError(r[0], "Variable already assigned.")
+        if rules == {}:
+            rules["Axiom"] = r[0]
         rules[r[0]] = (r[1][0], int(r[1][1]))
     for rule in rules.values():
         for char in re.findall(r"[a-zA-Z]", rule[0]):

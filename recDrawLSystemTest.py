@@ -27,24 +27,24 @@ class TestGetRules(unittest.TestCase):
     def test_ok_one_line_with_angle(self):
         ruleslist = ["F: F+F--F+F, 60"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": ("F+F--F+F", 60)})
+        self.assertEqual(rules, {"F": ("F+F--F+F", 60), "Axiom": "F"})
 
     def test_ok_one_line_no_angle(self):
         ruleslist = ["F: F+F--F+F"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": ("F+F--F+F", 90)})
+        self.assertEqual(rules, {"F": ("F+F--F+F", 90), "Axiom": "F"})
 
     def test_ok_two_line_with_angle(self):
         ruleslist = ["F: F+E--E+F, 60", "E: E-F++F-E, 70"]
         rules = recDrawLSystem.getRules(ruleslist)
         self.assertEqual(rules, {"F": ("F+E--E+F", 60),
-                                 "E": ("E-F++F-E", 70)})
+                                 "E": ("E-F++F-E", 70), "Axiom": "F"})
 
     def test_ok_two_line_no_angle(self):
         ruleslist = ["A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
         rules = recDrawLSystem.getRules(ruleslist)
         self.assertEqual(rules, {"A": ("-BF+AFA+FB-", 90),
-                                 "B": ("+AF-BFB-FA+", 90)})
+                                 "B": ("+AF-BFB-FA+", 90), "Axiom": "A"})
 
     def test_wrong_no_rule(self):
         ruleslist = [" "]
