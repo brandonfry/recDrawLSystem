@@ -67,12 +67,16 @@ def getRules(ruleslist):
         try:
             assert re.fullmatch(validrule, rule) is not None
         except AssertionError as e:
-            raise ValueError("Rule is not valid")
+            raise InputError(rule, "Rule is not valid")
         r = re.split(r":[ ]*", rule, maxsplit=1)
         if re.search(r",", rule):
             r[1] = re.split(r",[ ]*", r[1], maxsplit=1)
         else:
             r[1] = [r[1], "90"]
+        try:
+            assert r[0] not in rules.keys()
+        except AssertionError as e:
+            raise InputError(r[0], "Variable already assigned.")
         rules[r[0]] = (r[1][0], int(r[1][1]))
     for rule in rules.values():
         for char in re.findall(r"[a-zA-Z]", rule[0]):
