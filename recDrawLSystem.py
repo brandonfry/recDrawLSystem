@@ -22,7 +22,6 @@ import turtle
 import re
 
 
-
 class InputError(Exception):
     """Exception raised for errors in the input.
 
@@ -44,13 +43,32 @@ def drawLSystem(t, points):
     pass
 
 
+def recGeneratePointString(size, rules):
+    """
+    Given a dictionary of L-system rules and curve size, generate recursively
+    a flat L-system representation of the curve. Returns a single string.
+    """
+    pass
+
+
+def calcUnityPoints(ps):
+    pass
+
+
+def scalePoints(up):
+    pass
+
+
 def calcPoints(size, rules):
     """
     Given a dictionary of L-System rules, calculate all points
     along a curve of a particular size. Returns a list of points
     as tuples.
     """
-    pass
+    point_string = recGeneratePointString(size, rules)
+    unity_points = calcUnityPoints(point_string)
+    points = scalePoints(unity_points)
+    return points
 
 
 def getRules(ruleslist):
@@ -61,20 +79,8 @@ def getRules(ruleslist):
     ["F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60)}
     """
     rules = {}
-<<<<<<< HEAD
-    for rule in ruleslist:
-        r = rule.split(":")
-        r[1] = r[1].split(",")
-        if len(r[1]) == 2:
-            r[1] = (r[1][0].strip(), int(r[1][1].strip()))
-        else:
-            r[1] = (r[1][0].strip(), 90)
-        rules[r[0]] = r[1]
-        return rules
-
-=======
     validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+" +
-                           "([,][ ]*[0-9]+){0,1}")
+                           "([,][ ]*[0-9]+){0,1}$")
     for rule in ruleslist:
         try:
             assert re.fullmatch(validrule, rule) is not None
@@ -97,7 +103,6 @@ def getRules(ruleslist):
             except AssertionError as e:
                 raise InputError(char, "Variable not found in rules.")
     return rules
->>>>>>> 96ecb985c02022c4a5b96a324f2fb6ea94ee4cc4
 
 
 def setupTurtle():

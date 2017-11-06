@@ -46,17 +46,22 @@ class TestGetRules(unittest.TestCase):
         self.assertEqual(rules, {"A": ("-BF+AFA+FB-", 90),
                                  "B": ("+AF-BFB-FA+", 90)})
 
-    def test_wrong_one_line1(self):
+    def test_wrong_no_rule(self):
         ruleslist = [" "]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
-    def test_wrong_one_line2(self):
+    def test_wrong_no_comma(self):
         ruleslist = ["A: -A+A60"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
-    def test_wrong_one_line3(self):
+    def test_wrong_no_colon(self):
+        ruleslist = ["A -A+A, 60"]
+        self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
+                          ruleslist)
+
+    def test_wrong_variable_not_defined(self):
         ruleslist = ["A: -A+B"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
@@ -65,6 +70,28 @@ class TestGetRules(unittest.TestCase):
         ruleslist = ["A: -BF+AFA+FB-", "A: +AF-BFB-FA+"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
+
+
+class TestGeneratePoints(unittest.TestCase):
+
+    def test_size_1_one_line(self):
+        rules = {"F": ("F+F--F+F", 60)}
+        point_string = recDrawLSystem.recGeneratePointString(1, rules)
+        self.assertEqual(point_string, "F+(60)F-(60)-(60)F+(60)F")
+
+    def test_size_2_one_line(self):
+        rules = {"F": ("F+F--F+F", 60)}
+        point_string = recDrawLSystem.recGeneratePointString(2, rules)
+        self.assertEqual(point_string, "F+(60)F-(60)-(60)F+(60)F+(60)F+(60)" +
+                                       "F-(60)-(60)F+(60)F-(60)-(60)F+(60)F" +
+                                       "-(60)-(60)F+(60)F+(60)F+(60)F-(60)" +
+                                       "-(60)F+(60)F")
+
+    def test_size_3_one_line(self):
+        rules = {"F": ("F-F", 90)}
+        point_string = recDrawLSystem.recGeneratePointString(3, rules)
+        self.assertEqual(point_string, "F-(90)F-(90)F-(90)F-(90)F-(90)F-(90)" +
+                                       "F-(90)F")
 
 
 class TestCalcPoints(unittest.TestCase):
