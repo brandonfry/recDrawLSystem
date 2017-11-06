@@ -46,7 +46,8 @@ def drawLSystem(t, points):
 def recGeneratePointString(size, rules):
     """
     Given a dictionary of L-system rules and curve size, generate recursively
-    a flat L-system representation of the curve. Returns a single string.
+    a flat L-system representation of the curve. Returns a single string with
+    turn angles in parentheses after every turn, i.e. "F+(60)F-(60)F".
     """
     pass
 
@@ -76,30 +77,38 @@ def getRules(ruleslist):
     Takes a user-input list of strings and parses them for L-system
     rules. Returns a dictionary of rules.
 
-    ["F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60)}
+    ["60", "F", "F: F+F--F+F, 60"] -> {"F": ("F+F--F+F", 60), "Axiom": "F",
+    "Angle": 60}
     """
     rules = {}
-    validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+" +
-                           "([,][ ]*[0-9]+){0,1}$")
+    validangle = re.compile(r"^[0-9]+$")
+    validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+$")
+    validaxiom = re.compile(r"^[a-z-A-Z+-]+$")
+    angle = ruleslist.pop(0)
+    axiom = ruleslist.pop(0)
+    try:
+        assert re.fullmatch(validangle, angle) is not None
+        rules["Angle"] = int(angle)
+    except AssertionError as e:
+        raise InputError(angle, "Angle is not valid")
+    try:
+        assert re.fullmatch(validaxiom, axiom) is not None
+        rules["Axiom"] = axiom
+    except AssertionError as e:
+        raise InputError(axiom, "Axiom is not valid")
     for rule in ruleslist:
         try:
             assert re.fullmatch(validrule, rule) is not None
         except AssertionError as e:
             raise InputError(rule, "Rule is not valid")
         r = re.split(r":[ ]*", rule, maxsplit=1)
-        if re.search(r",", rule):
-            r[1] = re.split(r",[ ]*", r[1], maxsplit=1)
-        else:
-            r[1] = [r[1], "90"]
         try:
             assert r[0] not in rules.keys()
         except AssertionError as e:
             raise InputError(r[0], "Variable already assigned.")
-        if rules == {}:
-            rules["Axiom"] = r[0]
-        rules[r[0]] = (r[1][0], int(r[1][1]))
+        rules[r[0]] = r[1]
     for rule in rules.values():
-        for char in re.findall(r"[a-zA-Z]", rule[0]):
+        for char in re.findall(r"[a-zA-Z]", str(rule)):
             try:
                 assert char in [*rules.keys(), "F"]
             except AssertionError as e:
@@ -128,7 +137,7 @@ def closeTurtle(win):
 if __name__ == "__main__":
     # grab input for size, ruleslist
     size = 3
-    ruleslist = ["A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
+    ruleslist = ["90", "A", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()

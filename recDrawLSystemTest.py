@@ -25,49 +25,44 @@ import recDrawLSystem
 class TestGetRules(unittest.TestCase):
 
     def test_ok_one_line_with_angle(self):
-        ruleslist = ["F: F+F--F+F, 60"]
+        ruleslist = ["60", "F", "F: F+F--F+F"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": ("F+F--F+F", 60), "Axiom": "F"})
+        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60})
 
     def test_ok_one_line_no_angle(self):
-        ruleslist = ["F: F+F--F+F"]
+        ruleslist = ["60", "F", "F: F+F--F+F"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": ("F+F--F+F", 90), "Axiom": "F"})
+        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60})
 
     def test_ok_two_line_with_angle(self):
-        ruleslist = ["F: F+E--E+F, 60", "E: E-F++F-E, 70"]
+        ruleslist = ["60", "F", "F: F+E--E+F", "E: E-F++F-E"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": ("F+E--E+F", 60),
-                                 "E": ("E-F++F-E", 70), "Axiom": "F"})
+        self.assertEqual(rules, {"F": "F+E--E+F", "E": "E-F++F-E",
+                                 "Axiom": "F", "Angle": 60})
 
     def test_ok_two_line_no_angle(self):
-        ruleslist = ["A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
+        ruleslist = ["90", "A", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"A": ("-BF+AFA+FB-", 90),
-                                 "B": ("+AF-BFB-FA+", 90), "Axiom": "A"})
+        self.assertEqual(rules, {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+",
+                                 "Axiom": "A", "Angle": 90})
 
     def test_wrong_no_rule(self):
-        ruleslist = [" "]
-        self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
-                          ruleslist)
-
-    def test_wrong_no_comma(self):
-        ruleslist = ["A: -A+A60"]
+        ruleslist = [" ", " ", " "]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_no_colon(self):
-        ruleslist = ["A -A+A, 60"]
+        ruleslist = ["60", "A", "A -A+A"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_variable_not_defined(self):
-        ruleslist = ["A: -A+B"]
+        ruleslist = ["90", "A", "A: -A+B"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_reuse_variable(self):
-        ruleslist = ["A: -BF+AFA+FB-", "A: +AF-BFB-FA+"]
+        ruleslist = ["90", "A", "A: -BF+AFA+FB-", "A: +AF-BFB-FA+"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
@@ -75,23 +70,19 @@ class TestGetRules(unittest.TestCase):
 class TestGeneratePoints(unittest.TestCase):
 
     def test_size_1_one_line(self):
-        rules = {"F": ("F+F--F+F", 60)}
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
         point_string = recDrawLSystem.recGeneratePointString(1, rules)
-        self.assertEqual(point_string, "F+(60)F-(60)-(60)F+(60)F")
+        self.assertEqual(point_string, "F+F--F+F")
 
     def test_size_2_one_line(self):
-        rules = {"F": ("F+F--F+F", 60)}
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
         point_string = recDrawLSystem.recGeneratePointString(2, rules)
-        self.assertEqual(point_string, "F+(60)F-(60)-(60)F+(60)F+(60)F+(60)" +
-                                       "F-(60)-(60)F+(60)F-(60)-(60)F+(60)F" +
-                                       "-(60)-(60)F+(60)F+(60)F+(60)F-(60)" +
-                                       "-(60)F+(60)F")
+        self.assertEqual(point_string, "F+F--F+F+F+F--F+F--F+F--F+F+F+F--F+F")
 
     def test_size_3_one_line(self):
-        rules = {"F": ("F-F", 90)}
+        rules = {"F": "F-F", "Axiom": "F", "Angle": 60}
         point_string = recDrawLSystem.recGeneratePointString(3, rules)
-        self.assertEqual(point_string, "F-(90)F-(90)F-(90)F-(90)F-(90)F-(90)" +
-                                       "F-(90)F")
+        self.assertEqual(point_string, "F-F-F-F-F-F-F-F")
 
 
 class TestCalcPoints(unittest.TestCase):
