@@ -170,6 +170,50 @@ class TestPointClass(unittest.TestCase):
         point.update("-")
         self.assertEqual(90, point.orientation)
 
+    def test_update_FpF(self):
+        point = recDrawLSystem.Point(90)
+        point.update("F")
+        point.update("+")
+        point.update("F")
+        self.assertAlmostEqual(1, point.x)
+        self.assertAlmostEqual(-1, point.y)
+
+    def test_update_FpFmF(self):
+        point = recDrawLSystem.Point(90)
+        point.update("F")
+        point.update("+")
+        point.update("F")
+        point.update("-")
+        point.update("F")
+        self.assertAlmostEqual(2, point.x)
+        self.assertAlmostEqual(-1, point.y)
+
+    def test_update_mF_45d(self):
+        point = recDrawLSystem.Point(45)
+        point.update("-")
+        point.update("F")
+        self.assertAlmostEqual(0.7071068, point.x)
+        self.assertAlmostEqual(0.7071068, point.y)
+
+    def test_update_mFpF_45d(self):
+        point = recDrawLSystem.Point(45)
+        point.update("-")
+        point.update("F")
+        point.update("+")
+        point.update("F")
+        self.assertAlmostEqual(1.7071068, point.x)
+        self.assertAlmostEqual(0.7071068, point.y)
+
+    def test_update_mmmmF(self):
+        point = recDrawLSystem.Point(90)
+        point.update("-")
+        point.update("-")
+        point.update("-")
+        point.update("-")
+        point.update("F")
+        self.assertAlmostEqual(1, point.x)
+        self.assertAlmostEqual(0, point.y)
+
 
 class TestCalcPoints(unittest.TestCase):
     pass

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import turtle
 import re
+import math
 
 
 class Point():
@@ -55,7 +56,8 @@ class Point():
             self.orientation -= 360
 
     def forward(self):
-        pass
+        self.x += math.cos(math.radians(self.orientation))
+        self.y += math.sin(math.radians(self.orientation))
 
 
 class InputError(Exception):
