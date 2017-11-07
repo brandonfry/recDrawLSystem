@@ -102,7 +102,19 @@ def recGenerateLString(size, rule, rules):
 
 
 def calcUnityPoints(ls, angle):
-    pass
+    """
+    Given a string of L-system commands and a default angle, calculates
+    the points touched by the defined curve. Returns a list of x, y
+    tuples. Absolute distance between points is 1.
+    """
+
+    point = Point(angle)
+    up = []
+    for command in ls:
+        point.update(command)
+        if command == "F":
+            up.append((point.x, point.y))
+    return up
 
 
 def scalePoints(up):

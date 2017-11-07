@@ -215,6 +215,30 @@ class TestPointClass(unittest.TestCase):
         self.assertAlmostEqual(0, point.y)
 
 
+class TestCalcUnityPoints(unittest.TestCase):
+
+    def test_F(self):
+        angle = 90
+        ls = "F"
+        up = recDrawLSystem.calcUnityPoints(ls, angle)
+        self.assertEqual([(1, 0)], up)
+
+    def test_FmF(self):
+        angle = 90
+        ls = "F-F"
+        up = recDrawLSystem.calcUnityPoints(ls, angle)
+        self.assertEqual([(1, 0), (1, 1)], up)
+
+    def test_FmF_45(self):
+        angle = 45
+        ls = "F-F"
+        up = recDrawLSystem.calcUnityPoints(ls, angle)
+        ans = [(1, 0), (1.7071068, 0.7071068)]
+        for i, item in enumerate(ans):
+            for j, _ in enumerate(item):
+                self.assertAlmostEqual(ans[i][j], up[i][j])
+
+
 class TestCalcPoints(unittest.TestCase):
     pass
 
