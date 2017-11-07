@@ -221,22 +221,51 @@ class TestCalcUnityPoints(unittest.TestCase):
         angle = 90
         ls = "F"
         up = recDrawLSystem.calcUnityPoints(ls, angle)
-        self.assertEqual([(1, 0)], up)
+        self.assertEqual([(0, 0), (1, 0)], up)
 
     def test_FmF(self):
         angle = 90
         ls = "F-F"
         up = recDrawLSystem.calcUnityPoints(ls, angle)
-        self.assertEqual([(1, 0), (1, 1)], up)
+        self.assertEqual([(0, 0), (1, 0), (1, 1)], up)
 
     def test_FmF_45(self):
         angle = 45
         ls = "F-F"
         up = recDrawLSystem.calcUnityPoints(ls, angle)
-        ans = [(1, 0), (1.7071068, 0.7071068)]
+        ans = [(0, 0), (1, 0), (1.7071068, 0.7071068)]
         for i, item in enumerate(ans):
             for j, _ in enumerate(item):
                 self.assertAlmostEqual(ans[i][j], up[i][j])
+
+
+class TestScalePoints(unittest.TestCase):
+
+    def test_1(self):
+        up = [(0, 0), (1, 0), (1, 1)]
+        points = recDrawLSystem.scalePoints(up)
+        ans = [(-200, -200), (200, -200), (200, 200)]
+        for i, item in enumerate(ans):
+            for j, _ in enumerate(item):
+                self.assertAlmostEqual(ans[i][j], points[i][j])
+
+    def test_2(self):
+        up = [(0,0), (0.7071068, 0.7071068), (1.7071068, 0.7071068)]
+        points = recDrawLSystem.scalePoints(up)
+        ans = [(-200, -200), (-35, -35),
+               (199, -35)]
+        for i, item in enumerate(ans):
+            for j, _ in enumerate(item):
+                self.assertAlmostEqual(ans[i][j], round(points[i][j]))
+
+    def test_3(self):
+        up = [(0, 0), (-1, 0), (1, 1)]
+        points = recDrawLSystem.scalePoints(up)
+        ans = [(0, -100), (-200, -100), (200, 100)]
+        print(points)
+        for i, item in enumerate(ans):
+            for j, _ in enumerate(item):
+                self.assertAlmostEqual(ans[i][j], round(points[i][j]))
 
 
 class TestCalcPoints(unittest.TestCase):

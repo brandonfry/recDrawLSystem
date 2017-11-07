@@ -109,7 +109,7 @@ def calcUnityPoints(ls, angle):
     """
 
     point = Point(angle)
-    up = []
+    up = [(0, 0)]
     for command in ls:
         point.update(command)
         if command == "F":
@@ -118,7 +118,22 @@ def calcUnityPoints(ls, angle):
 
 
 def scalePoints(up):
-    pass
+    """
+    Given a list of x,y tuples of an L-system curve with an absolute
+    distance between points of 1, scale the points up to fit within
+    a 400 x 400 grid. Grid values range from (-200, -200) to (200, 200)
+    """
+
+    [x_max, y_max] = list(map(max, zip(*up)))
+    [x_min, y_min] = list(map(min, zip(*up)))
+    x_diff = x_max - x_min
+    y_diff = y_max - y_min
+    max_diff = max(x_diff, y_diff)
+    scale = 400 // max_diff
+    points = []
+    for point in up:
+        points.append((point[0]*scale, point[1]*scale))
+    return points
 
 
 def calcPoints(size, rules):
