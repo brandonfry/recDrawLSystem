@@ -22,6 +22,42 @@ import turtle
 import re
 
 
+class Point():
+    """
+    Tracks the last calculated point of an L-system. Takes updates
+    as a string to move the point forward or turn it left or right.
+    The angle of left and right turns is established when the
+    instance is created.
+    """
+
+    def __init__(self, angle):
+        self.x = 0
+        self.y = 0
+        self.angle = angle
+        self.orientation = 0
+
+    def update(self, move):
+        if move == "F":
+            self.forward()
+        elif move == "+":
+            self.right()
+        elif move == "-":
+            self.left()
+
+    def right(self):
+        self.orientation -= self.angle
+        if self.orientation < 0:
+            self.orientation += 360
+
+    def left(self):
+        self.orientation += self.angle
+        if self.orientation >= 360:
+            self.orientation -= 360
+
+    def forward(self):
+        pass
+
+
 class InputError(Exception):
     """Exception raised for errors in the input.
 
@@ -54,14 +90,7 @@ def recGenerateLString(size, rule, rules):
     s = ""
     if size == 0:
         return ''.join(re.findall(r"[F+-]", rule))
-    elif size == 1:
-        for char in rule:
-            if char in rules.keys():
-                s += ''.join(re.findall(r"[F+-]", rules[char]))
-            elif char in "F+-":
-                s += char
-        return s
-    elif size > 1:
+    elif size >= 1:
         for char in rule:
             if char in rules.keys():
                 s += recGenerateLString(size-1, rules[char], rules)
@@ -70,7 +99,7 @@ def recGenerateLString(size, rule, rules):
         return s
 
 
-def calcUnityPoints(ps):
+def calcUnityPoints(ls, angle):
     pass
 
 
@@ -85,9 +114,8 @@ def calcPoints(size, rules):
     as tuples.
     """
 
-    string = recGenerateLString(size, rules["Axiom"], rules)
-    print(string)
-    unity_points = calcUnityPoints(string)
+    l_string = recGenerateLString(size, rules["Axiom"], rules)
+    unity_points = calcUnityPoints(l_string, rules["Angle"])
     points = scalePoints(unity_points)
     return points
 

@@ -149,6 +149,28 @@ class TestGeneratePoints(unittest.TestCase):
         self.assertEqual(point_string, "-+F-F-F+F+-F+F+F-F-F+F+F-+F+F-F-F+-")
 
 
+class TestPointClass(unittest.TestCase):
+
+    def test_init(self):
+        point = recDrawLSystem.Point(90)
+        self.assertEqual((0, 0, 90), (point.x, point.y, point.angle))
+
+    def test_update_F(self):
+        point = recDrawLSystem.Point(90)
+        point.update("F")
+        self.assertEqual((1, 0), (point.x, point.y))
+
+    def test_update_plus(self):
+        point = recDrawLSystem.Point(90)
+        point.update("+")
+        self.assertEqual(270, point.orientation)
+
+    def test_update_minus(self):
+        point = recDrawLSystem.Point(90)
+        point.update("-")
+        self.assertEqual(90, point.orientation)
+
+
 class TestCalcPoints(unittest.TestCase):
     pass
 
