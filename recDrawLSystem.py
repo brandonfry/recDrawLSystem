@@ -56,20 +56,16 @@ def recGenerateLString(size, rule, rules):
         return ''.join(re.findall(r"[F+-]", rule))
     elif size == 1:
         for char in rule:
-            if char in "+-":
-                s += char
-            elif char in rules.keys():
+            if char in rules.keys():
                 s += ''.join(re.findall(r"[F+-]", rules[char]))
-            elif char == "F":
+            elif char in "F+-":
                 s += char
         return s
     elif size > 1:
         for char in rule:
-            if char in "+-":
-                s += char
-            elif char in rules.keys():
+            if char in rules.keys():
                 s += recGenerateLString(size-1, rules[char], rules)
-            elif char == "F":
+            elif char in "F+-":
                 s += char
         return s
 

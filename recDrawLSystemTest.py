@@ -141,6 +141,13 @@ class TestGeneratePoints(unittest.TestCase):
                                                          rules)
         self.assertEqual(point_string, "F-F+F+F-F+F+F-F+F")
 
+    def test_size_2_two_line(self):
+        rules = {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+", "Axiom": "A",
+                 "Angle": 90}
+        point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
+                                                         rules)
+        self.assertEqual(point_string, "-+F-F-F+F+-F+F+F-F-F+F+F-+F+F-F-F+-")
+
 
 class TestCalcPoints(unittest.TestCase):
     pass
