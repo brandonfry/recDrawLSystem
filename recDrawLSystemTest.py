@@ -247,25 +247,23 @@ class TestScalePoints(unittest.TestCase):
         ans = [(-200, -200), (200, -200), (200, 200)]
         for i, item in enumerate(ans):
             for j, _ in enumerate(item):
-                self.assertAlmostEqual(ans[i][j], points[i][j])
+                self.assertEqual(ans[i][j], points[i][j])
 
     def test_2(self):
-        up = [(0,0), (0.7071068, 0.7071068), (1.7071068, 0.7071068)]
+        up = [(0, 0), (0.7071068, 0.7071068), (1.7071068, 0.7071068)]
         points = recDrawLSystem.scalePoints(up)
-        ans = [(-200, -200), (-35, -35),
-               (199, -35)]
+        ans = [(-200, -83), (-35, 83), (199, 83)]
         for i, item in enumerate(ans):
             for j, _ in enumerate(item):
-                self.assertAlmostEqual(ans[i][j], round(points[i][j]))
+                self.assertEqual(ans[i][j], points[i][j])
 
     def test_3(self):
         up = [(0, 0), (-1, 0), (1, 1)]
         points = recDrawLSystem.scalePoints(up)
         ans = [(0, -100), (-200, -100), (200, 100)]
-        print(points)
         for i, item in enumerate(ans):
             for j, _ in enumerate(item):
-                self.assertAlmostEqual(ans[i][j], round(points[i][j]))
+                self.assertEqual(ans[i][j], points[i][j])
 
 
 class TestCalcPoints(unittest.TestCase):

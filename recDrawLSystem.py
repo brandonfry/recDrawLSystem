@@ -79,7 +79,11 @@ def drawLSystem(t, points):
     a curve described by an L-System.
     """
 
-    pass
+    t.penup()
+    t.setpos(points[0])
+    t.pendown()
+    for point in points[1:]:
+        t.setpos(point)
 
 
 def recGenerateLString(size, rule, rules):
@@ -132,7 +136,8 @@ def scalePoints(up):
     scale = 400 // max_diff
     points = []
     for point in up:
-        points.append((point[0]*scale, point[1]*scale))
+        points.append((round(((point[0]-x_min)*scale)-(200*(x_diff/max_diff))),
+                       round(((point[1]-y_min)*scale)-(200*(y_diff/max_diff)))))
     return points
 
 
@@ -199,9 +204,6 @@ def setupTurtle():
     win = turtle.Screen()
     win.bgcolor("gray")
     t.speed(0)
-    t.penup()
-    t.setposition(-200, -200)
-    t.pendown()
     t.color("black")
     t.width(width=0)
     return t, win
@@ -214,8 +216,8 @@ def closeTurtle(win):
 
 if __name__ == "__main__":
     # grab input for size, ruleslist
-    size = 1
-    ruleslist = ["90", "A", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
+    size = 12
+    ruleslist = ["90", "FX", "X: X+YF+", "Y: -FX-Y"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()
