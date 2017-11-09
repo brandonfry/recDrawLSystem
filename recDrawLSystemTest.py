@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import recDrawLSystem
+import timeit
 
 
 class TestGetRules(unittest.TestCase):
@@ -269,10 +270,6 @@ class TestScalePoints(unittest.TestCase):
 
 
 class TestCalcPoints(unittest.TestCase):
-    pass
-
-
-class TestDrawLSystem(unittest.TestCase):
     pass
 
 

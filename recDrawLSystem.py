@@ -96,6 +96,7 @@ def recGenerateLString(size, rule, rules):
     s = ""
     if size == 0:
         sub_rule = ""
+#        sub_rule += str("F" if rule[i] in rules["Alias"] else rule[i] for i in range(len(rule)))
         for i in range(len(rule)):
             if rule[i] in rules["Alias"]:
                 sub_rule += "F"
@@ -212,6 +213,21 @@ def getRules(ruleslist):
     return rules
 
 
+def get_input():
+    ans = input("Would you like to input an L-System? Y/N: ").lower()
+    if ans == "n":
+        return None
+    lsystem = []
+    lsystem.append(int(input("Enter size as integer: ")))
+    lsystem.append(input("Enter angle in degrees: "))
+    lsystem.append(input("Enter axiom: "))
+    lsystem.append(input("Enter aliases: "))
+    n = int(input("Enter number of production rules: "))
+    for i in range(1, n+1):
+        lsystem.append(input("Rule {}: ".format(i)))
+    return lsystem
+
+
 def setupTurtle():
     t = turtle.Turtle()
     win = turtle.Screen()
@@ -229,8 +245,13 @@ def closeTurtle(win):
 
 if __name__ == "__main__":
     # grab input for size, ruleslist
-    size = 4
-    ruleslist = ["120", "F-G-G", "FG", "F: F-G+F+G-F", "G: GG"]
+    lsystem = get_input()
+    if lsystem == None:
+        size = 4
+        ruleslist = ["60", "F", "F", "F: F+F--F+F"]
+    else:
+        size = lsystem[0]
+        ruleslist = lsystem[1:]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()
