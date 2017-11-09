@@ -96,9 +96,9 @@ def recGenerateLString(size, rule, rules):
     s = ""
     if size == 0:
         sub_rule = ""
-#        sub_rule += str("F" if rule[i] in rules["Alias"] else rule[i] for i in range(len(rule)))
+        aliases = rules["Alias"]
         for i in range(len(rule)):
-            if rule[i] in rules["Alias"]:
+            if rule[i] in aliases:
                 sub_rule += "F"
             else:
                 sub_rule += rule[i]
@@ -217,12 +217,17 @@ def get_input():
     ans = input("Would you like to input an L-System? Y/N: ").lower()
     if ans == "n":
         return None
+    elif ans != "y":
+        lsystem = get_input()
+        return lsystem
     lsystem = []
     lsystem.append(int(input("Enter size as integer: ")))
     lsystem.append(input("Enter angle in degrees: "))
     lsystem.append(input("Enter axiom: "))
     lsystem.append(input("Enter aliases: "))
     n = int(input("Enter number of production rules: "))
+    print("Enter production rules as in the following example")
+    print("A: -AF+BFB+FA-")
     for i in range(1, n+1):
         lsystem.append(input("Rule {}: ".format(i)))
     return lsystem
@@ -248,7 +253,7 @@ if __name__ == "__main__":
     lsystem = get_input()
     if lsystem == None:
         size = 4
-        ruleslist = ["60", "F", "F", "F: F+F--F+F"]
+        ruleslist = ["120", "F-G-G", "FG", "F: F-G+F+G-F", "G: GG"]
     else:
         size = lsystem[0]
         ruleslist = lsystem[1:]
