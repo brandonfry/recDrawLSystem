@@ -95,7 +95,13 @@ def recGenerateLString(size, rule, rules):
 
     s = ""
     if size == 0:
-        return ''.join(re.findall(r"[F+-]", rule))
+        sub_rule = ""
+        for i in range(len(rule)):
+            if rule[i] in rules["Alias"]:
+                sub_rule += "F"
+            else:
+                sub_rule += rule[i]
+        return ''.join(re.findall(r"[F+-]", sub_rule))
     elif size >= 1:
         for char in rule:
             if char in rules.keys():
@@ -166,9 +172,11 @@ def getRules(ruleslist):
     rules = {}
     validangle = re.compile(r"^[0-9]+$")
     validrule = re.compile(r"^([a-zA-Z][:][ ]*){1}[a-zA-Z+-]+$")
-    validaxiom = re.compile(r"^[a-z-A-Z+-]+$")
+    validaxiom = re.compile(r"^[a-zA-Z+-]+$")
+    validalias = re.compile(r"^[a-zA-Z]+$")
     angle = ruleslist.pop(0)
     axiom = ruleslist.pop(0)
+    alias = ruleslist.pop(0)
     try:
         assert re.fullmatch(validangle, angle) is not None
         rules["Angle"] = int(angle)
@@ -179,6 +187,11 @@ def getRules(ruleslist):
         rules["Axiom"] = axiom
     except AssertionError as e:
         raise InputError(axiom, "Axiom is not valid")
+    try:
+        assert re.fullmatch(validalias, alias)
+        rules["Alias"] = alias
+    except AssertionError as e:
+        raise InputError(alias, "Alias is not valid")
     for rule in ruleslist:
         try:
             assert re.fullmatch(validrule, rule) is not None
@@ -216,8 +229,8 @@ def closeTurtle(win):
 
 if __name__ == "__main__":
     # grab input for size, ruleslist
-    size = 12
-    ruleslist = ["90", "FX", "X: X+YF+", "Y: -FX-Y"]
+    size = 4
+    ruleslist = ["120", "F-G-G", "FG", "F: F-G+F+G-F", "G: GG"]
     rules = getRules(ruleslist)
     points = calcPoints(size, rules)
     t, win = setupTurtle()

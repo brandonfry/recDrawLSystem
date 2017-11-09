@@ -25,54 +25,56 @@ import recDrawLSystem
 class TestGetRules(unittest.TestCase):
 
     def test_ok_one_line_with_angle(self):
-        ruleslist = ["60", "F", "F: F+F--F+F"]
+        ruleslist = ["60", "F", "F", "F: F+F--F+F"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60})
+        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60,
+                                 "Alias": "F"})
 
     def test_ok_one_line_no_angle(self):
-        ruleslist = ["60", "F", "F: F+F--F+F"]
+        ruleslist = ["60", "F", "F", "F: F+F--F+F"]
         rules = recDrawLSystem.getRules(ruleslist)
-        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60})
+        self.assertEqual(rules, {"F": "F+F--F+F", "Axiom": "F", "Angle": 60,
+                                 "Alias": "F"})
 
     def test_ok_two_line_with_angle(self):
-        ruleslist = ["60", "F", "F: F+E--E+F", "E: E-F++F-E"]
+        ruleslist = ["60", "F", "F", "F: F+E--E+F", "E: E-F++F-E"]
         rules = recDrawLSystem.getRules(ruleslist)
         self.assertEqual(rules, {"F": "F+E--E+F", "E": "E-F++F-E",
-                                 "Axiom": "F", "Angle": 60})
+                                 "Axiom": "F", "Angle": 60, "Alias": "F"})
 
     def test_ok_two_line_no_angle(self):
-        ruleslist = ["90", "A", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
+        ruleslist = ["90", "A", "F", "A: -BF+AFA+FB-", "B: +AF-BFB-FA+"]
         rules = recDrawLSystem.getRules(ruleslist)
         self.assertEqual(rules, {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+",
-                                 "Axiom": "A", "Angle": 90})
+                                 "Axiom": "A", "Angle": 90, "Alias": "F"})
 
     def test_wrong_no_rule(self):
-        ruleslist = [" ", " ", " "]
+        ruleslist = [" ", " ", " ", " "]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_no_colon(self):
-        ruleslist = ["60", "A", "A -A+A"]
+        ruleslist = ["60", "A", "F", "A -A+A"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_variable_not_defined(self):
-        ruleslist = ["90", "A", "A: -A+B"]
+        ruleslist = ["90", "A", "F", "A: -A+B"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_reuse_variable(self):
-        ruleslist = ["90", "A", "A: -BF+AFA+FB-", "A: +AF-BFB-FA+"]
+        ruleslist = ["90", "A", "F", "A: -BF+AFA+FB-", "A: +AF-BFB-FA+"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_invalid_rule(self):
-        ruleslist = ["90", "A", "A: A?A"]
+        ruleslist = ["90", "A", "F", "A: A?A"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
     def test_wrong_invalid_angle(self):
-        ruleslist = ["9X", "A", "A: A+F"]
+        ruleslist = ["9X", "A", "F", "A: A+F"]
         self.assertRaises(recDrawLSystem.InputError, recDrawLSystem.getRules,
                           ruleslist)
 
@@ -80,70 +82,70 @@ class TestGetRules(unittest.TestCase):
 class TestGeneratePoints(unittest.TestCase):
 
     def test_size_0_one_line(self):
-        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F")
 
     def test_size_0_one_line2(self):
-        rules = {"F": "F+F--F+F", "Axiom": "F+F", "Angle": 60}
+        rules = {"F": "F+F--F+F", "Axiom": "F+F", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F+F")
 
     def test_size_0_one_line3(self):
-        rules = {"F": "F+F", "Axiom": "F-G", "Angle": 90}
+        rules = {"F": "F+F", "Axiom": "F-G", "Angle": 90, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(0, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F-")
 
     def test_size_1_one_line(self):
-        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F+F--F+F")
 
     def test_size_1_one_line2(self):
-        rules = {"A": "F+F--F+F", "Axiom": "A", "Angle": 60}
+        rules = {"A": "F+F--F+F", "Axiom": "A", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F+F--F+F")
 
     def test_size_2_one_line(self):
-        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60}
+        rules = {"F": "F+F--F+F", "Axiom": "F", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F+F--F+F+F+F--F+F--F+F--F+F+F+F--F+F")
 
     def test_size_3_one_line(self):
-        rules = {"F": "F-F", "Axiom": "F", "Angle": 60}
+        rules = {"F": "F-F", "Axiom": "F", "Angle": 60, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(3, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F-F-F-F-F-F-F-F")
 
     def test_size_1_two_line(self):
         rules = {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+", "Axiom": "A",
-                 "Angle": 90}
+                 "Angle": 90, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "-F+F+F-")
 
     def test_size_2_one_line2(self):
-        rules = {"F": "F+F-F-F+F", "Axiom": "F", "Angle": 90}
+        rules = {"F": "F+F-F-F+F", "Axiom": "F", "Angle": 90, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F" +
                                        "-F+F+F+F-F-F+F")
 
     def test_size_1_one_line3(self):
-        rules = {"F": "F-F+F", "Axiom": "F+F+F", "Angle": 90}
+        rules = {"F": "F-F+F", "Axiom": "F+F+F", "Angle": 90, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(1, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "F-F+F+F-F+F+F-F+F")
 
     def test_size_2_two_line(self):
         rules = {"A": "-BF+AFA+FB-", "B": "+AF-BFB-FA+", "Axiom": "A",
-                 "Angle": 90}
+                 "Angle": 90, "Alias": "F"}
         point_string = recDrawLSystem.recGenerateLString(2, rules["Axiom"],
                                                          rules)
         self.assertEqual(point_string, "-+F-F-F+F+-F+F+F-F-F+F+F-+F+F-F-F+-")
