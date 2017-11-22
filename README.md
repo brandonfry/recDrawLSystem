@@ -5,3 +5,5 @@ I was working through www.interactivepython.org 's algorithms and data structure
 As of now the program works for most any input and, by default, prints out a small Sierpinski triangle. Turtle is used to handle the graphics. Input checks and parsing are done by regex. 
 
 The one bit of functionality not baked in at the moment is the handling of parentheses. Parens can be used in L-systems to denote when the curve should back-track to a previous branching-off point. This is useful for making tree shapes and the like. I suppose it would be easy to either add that to the Point class, tracking previous save points in a stack until needed. Alternatively it could be done in recGenerateLString by simply going backwards in the set of instructions after reaching a closing paren. 
+
+I've also included my test file for this script, since I decided to run with TDD this time. While integration tests would not have been pointless, everything worked after the individual functions were written, so I decided to continue forward with my progress in the course.
